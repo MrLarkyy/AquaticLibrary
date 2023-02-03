@@ -47,15 +47,35 @@ public class Table {
     }
 
     public String getDeleteSql() {
-        return "";
+        return "DELETE FROM "+name+" WHERE "+primaryColumn.getName()+" = ?";
     }
 
-    public String getUpdageSql() {
-        return "";
+    public String getUpdateSql() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE ")
+                .append(name)
+                .append(" SET ");
+
+        var list = columns.stream().filter(c -> !c.isPrimary()).toList();
+        int i = 0;
+        for (var column : list) {
+            sb.append(column.getName())
+                    .append(" = ?");
+            if (i + 1 < list.size()) {
+                sb.append(", ");
+            }
+            i++;
+        }
+        sb.append(" WHERE ")
+                .append(primaryColumn.getName())
+                .append(" = ?");
+
+        return sb.toString();
     }
 
     public String getSelectSql() {
-        return "";
+        return "SELECT * FROM "+name+" ";
     }
 
     public Column getPrimaryColumn() {

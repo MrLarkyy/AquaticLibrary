@@ -51,12 +51,12 @@ public abstract class DatabaseContext {
                     if (f.trySetAccessible()) {
                         f.set(dbSet, this);
                     }
-                    /*
+
                     f = dbSet.getClass().getDeclaredField("genericClass");
                     if (f.trySetAccessible()) {
                         f.set(dbSet, clazz);
                     }
-                     */
+
                     f = dbSet.getClass().getDeclaredField("table");
                     if (f.trySetAccessible()) {
                         f.set(dbSet, table);
