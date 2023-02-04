@@ -1,2 +1,2 @@
-<h1 style="text-align: center">AquaticLibrary</h1>
-<p style="text-align: center">aaa</p>
+<h1 align:="center">AquaticLibrary</h1>
+<p align:="center">aaa</p>
