@@ -86,6 +86,7 @@ public class PropContext<T extends Prop> extends DatabaseContext {
                 while (rs.next()) {
                     Location location = Location.deserialize(gson.fromJson(rs.getString("location"), Map.class));
                     PropData propData = new PropData(gson.fromJson(rs.getString("data"), Map.class));
+                    propData.addData("table_column_id",rs.getLong("id")+"");
                     var prop = createProp.apply(new AbstractMap.SimpleEntry<>(location,propData));
                     props.add(prop);
                     prop.load();
