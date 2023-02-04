@@ -6,6 +6,7 @@ import xyz.larkyy.aquaticlibrary.AquaticLibrary;
 import xyz.larkyy.aquaticlibrary.database.DatabaseContext;
 import xyz.larkyy.aquaticlibrary.database.configuration.DatabaseConfiguration;
 import xyz.larkyy.aquaticlibrary.database.configuration.SQLiteAdapter;
+import xyz.larkyy.aquaticlibrary.reflection.ReflectionUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,7 +36,19 @@ public class PropContext<T extends Prop> extends DatabaseContext {
                 pstmt.setObject(1, gson.toJson(prop.getLocation().serialize()));
                 pstmt.setObject(2, gson.toJson(prop.getPropData().getData()));
 
-                pstmt.executeUpdate();;
+                int affectedRows = pstmt.executeUpdate();
+
+                if (affectedRows == 0) {
+                    return;
+                }
+
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        long key = generatedKeys.getLong(1);
+                        prop.getPropData().addData("table_column_id",key+"");
+                    }
+                }
+
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -47,7 +60,20 @@ public class PropContext<T extends Prop> extends DatabaseContext {
     }
 
     public void deleteProp(T prop) {
-        //props.remove(prop);
+        getDatabase().sql("DELETE FROM "+tableName+" WHERE id = ?", pstmt -> {
+            try {
+                var idStr = prop.getPropData().getData("table_column_id");
+                if (idStr == null) {
+                    return;
+                }
+                var value = Long.parseLong(idStr);
+                pstmt.setLong(1,value);
+
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public List<T> loadProps() {
