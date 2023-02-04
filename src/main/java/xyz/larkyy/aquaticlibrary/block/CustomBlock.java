@@ -20,10 +20,10 @@ import java.util.List;
 
 public abstract class CustomBlock extends Prop {
     private final List<EventAction<?>> eventActions = new ArrayList<>();
-    private boolean breakable = true;
-    private boolean explodable = true;
-    private boolean pushable = true;
-    private boolean interactable = true;
+    private boolean breakable;
+    private boolean explodable;
+    private boolean pushable;
+    private boolean interactable;
 
     public CustomBlock(Location location, PropData data) {
         super(location, data);
@@ -31,6 +31,10 @@ public abstract class CustomBlock extends Prop {
         if (service != null) {
             service.addProp(this);
         }
+        breakable = true;
+        explodable = true;
+        pushable = true;
+        interactable = true;
     }
 
     public void delete() {
@@ -51,7 +55,7 @@ public abstract class CustomBlock extends Prop {
                 return;
             }
             if (block.equals(getBlock())) {
-                if (!interactable) {
+                if (!isInteractable()) {
                     e.setCancelled(true);
                 }
                 var event = new CustomBlockInteractEvent(this,e);
@@ -61,7 +65,7 @@ public abstract class CustomBlock extends Prop {
         eventActions.add(registry.register(BlockBreakEvent.class, e -> {
             var block = e.getBlock();
             if (block.equals(getBlock())) {
-                if (!breakable) {
+                if (!isBreakable()) {
                     e.setCancelled(true);
                 }
                 var event = new CustomBlockBreakEvent(this,e);
@@ -70,7 +74,7 @@ public abstract class CustomBlock extends Prop {
         }));
         eventActions.add(registry.register(BlockPistonExtendEvent.class, e -> {
             if (e.getBlocks().contains(getBlock())) {
-                if (!pushable) {
+                if (!isPushable()) {
                     e.setCancelled(true);
                 }
                 var event = new CustomBlockPistonExtendEvent(this,e);
@@ -79,7 +83,7 @@ public abstract class CustomBlock extends Prop {
         }));
         eventActions.add(registry.register(BlockPistonRetractEvent.class, e -> {
             if (e.getBlocks().contains(getBlock())) {
-                if (!pushable) {
+                if (!isPushable()) {
                     e.setCancelled(true);
                 }
                 var event = new CustomBlockPistonRetractEvent(this,e);
@@ -88,7 +92,7 @@ public abstract class CustomBlock extends Prop {
         }));
         eventActions.add(registry.register(BlockExplodeEvent.class, e -> {
             if (e.getBlock().equals(getBlock())) {
-                if (!explodable) {
+                if (!isExplodable()) {
                     e.setCancelled(true);
                 }
                 var event = new CustomBlockExplodeEvent(this,e);
