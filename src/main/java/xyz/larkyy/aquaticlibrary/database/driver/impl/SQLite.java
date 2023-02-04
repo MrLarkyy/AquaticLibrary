@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class SQLite implements SQLDriver {
@@ -22,21 +21,6 @@ public class SQLite implements SQLDriver {
         databaseFile = new File(folder,fileName);
         databaseFile.createNewFile();
         getConnection();
-    }
-
-    @Override
-    public void insert(List<Object> values) {
-
-    }
-
-    @Override
-    public void remove(int id) {
-
-    }
-
-    @Override
-    public void update(int id, List<Object> values) {
-
     }
 
     @Override
