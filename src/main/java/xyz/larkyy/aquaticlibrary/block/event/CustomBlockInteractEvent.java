@@ -3,7 +3,9 @@ package xyz.larkyy.aquaticlibrary.block.event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import xyz.larkyy.aquaticlibrary.block.CustomBlock;
 
 public class CustomBlockInteractEvent extends Event {
@@ -14,6 +16,14 @@ public class CustomBlockInteractEvent extends Event {
     public CustomBlockInteractEvent(CustomBlock customBlock, PlayerInteractEvent event) {
         this.customBlock = customBlock;
         this.event = event;
+    }
+
+    public Action getAction() {
+        return event.getAction();
+    }
+
+    public EquipmentSlot getHand() {
+        return event.getHand();
     }
 
     public Player getPlayer() {
