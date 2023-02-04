@@ -45,9 +45,17 @@ public class EventListener<T extends Event> implements EventExecutor, Listener {
     @Override
     public void execute(Listener listener, Event event) {
         if (getEventClass().isInstance(event)) {
-            actions.forEach(a -> {
-                a.accept((T) event);
-            });
+            int size = actions.size();
+            for (int i = 0; i < actions.size(); i++) {
+                var action = actions.get(i);
+                if (action != null) {
+                    action.accept((T) event);
+                }
+                if (size != actions.size()) {
+                    size = actions.size();
+                    i--;
+                }
+            }
         }
     }
 }
