@@ -22,13 +22,19 @@ public abstract class PropManager<T extends Prop> {
     }
 
     public void registerProp(T prop) {
-        props.add(prop);
         context.addProp(prop);
     }
 
     public void unregisterProp(T prop) {
-        props.remove(prop);
         context.deleteProp(prop);
+    }
+
+    public void addProp(T prop) {
+        props.add(prop);
+    }
+
+    public void removeProp(T prop) {
+        props.remove(prop);
     }
 
     public List<T> getProps() {

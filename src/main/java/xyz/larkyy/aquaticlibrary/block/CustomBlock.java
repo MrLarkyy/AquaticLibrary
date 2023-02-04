@@ -27,6 +27,10 @@ public abstract class CustomBlock extends Prop {
 
     public CustomBlock(Location location, PropData data) {
         super(location, data);
+        var service = ServiceManager.getGenericService(BlockManager.class,this.getClass());
+        if (service != null) {
+            service.addProp(this);
+        }
     }
 
     public void registerEvents() {

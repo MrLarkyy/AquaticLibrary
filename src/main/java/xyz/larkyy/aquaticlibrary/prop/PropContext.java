@@ -13,16 +13,19 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PropContext<T extends Prop> extends DatabaseContext {
 
     private final Function<Map.Entry<Location,PropData>,T> createProp;
     private final String tableName;
+    private final Consumer<DatabaseConfiguration> onConfiguring;
 
-    public PropContext(String tableName,Function<Map.Entry<Location,PropData>,T> createPropFunction) {
+    public PropContext(String tableName,Function<Map.Entry<Location,PropData>,T> createPropFunction, Consumer<DatabaseConfiguration> onConfiguring) {
         this.createProp = createPropFunction;
         this.tableName = tableName;
+        this.onConfiguring = onConfiguring;
     }
 
     public void addProp(T prop) {
@@ -70,7 +73,7 @@ public class PropContext<T extends Prop> extends DatabaseContext {
 
     @Override
     public void onConfiguring(DatabaseConfiguration configuration) {
-        configuration.setAdapter(new SQLiteAdapter(AquaticLibrary.getPlugin().getDataFolder(),"database"));
+        onConfiguring.accept(configuration);
     }
 
     @Override
