@@ -17,7 +17,7 @@ public abstract class PropManager<T extends Prop> {
     }
 
     public void unloadProps() {
-        props.forEach(Prop::onUnload);
+        props.forEach(Prop::unload);
         props.clear();
     }
 
@@ -33,5 +33,9 @@ public abstract class PropManager<T extends Prop> {
 
     public List<T> getProps() {
         return props;
+    }
+
+    public PropContext<T> getContext() {
+        return context;
     }
 }

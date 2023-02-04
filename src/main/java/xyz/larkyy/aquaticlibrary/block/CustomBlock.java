@@ -2,14 +2,13 @@ package xyz.larkyy.aquaticlibrary.block;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import xyz.larkyy.aquaticlibrary.block.event.CustomBlockInteractEvent;
+import xyz.larkyy.aquaticlibrary.block.event.*;
 import xyz.larkyy.aquaticlibrary.event.EventAction;
 import xyz.larkyy.aquaticlibrary.event.EventRegistry;
 import xyz.larkyy.aquaticlibrary.prop.Prop;
@@ -21,6 +20,10 @@ import java.util.List;
 
 public abstract class CustomBlock extends Prop {
     private final List<EventAction<?>> eventActions = new ArrayList<>();
+    private boolean breakable = true;
+    private boolean explodable = true;
+    private boolean pushable = true;
+    private boolean interactable = true;
 
     public CustomBlock(Location location, PropData data) {
         super(location, data);
@@ -35,6 +38,9 @@ public abstract class CustomBlock extends Prop {
                 return;
             }
             if (block.equals(getBlock())) {
+                if (!interactable) {
+                    e.setCancelled(true);
+                }
                 var event = new CustomBlockInteractEvent(this,e);
                 Bukkit.getPluginManager().callEvent(event);
             }
@@ -42,30 +48,38 @@ public abstract class CustomBlock extends Prop {
         eventActions.add(registry.register(BlockBreakEvent.class, e -> {
             var block = e.getBlock();
             if (block.equals(getBlock())) {
-                /*
-                    TODO: Send a custom event
-                 */
+                if (!breakable) {
+                    e.setCancelled(true);
+                }
+                var event = new CustomBlockBreakEvent(this,e);
+                Bukkit.getPluginManager().callEvent(event);
             }
         }));
         eventActions.add(registry.register(BlockPistonExtendEvent.class, e -> {
             if (e.getBlocks().contains(getBlock())) {
-                /*
-                    TODO: Send a custom event
-                 */
+                if (!pushable) {
+                    e.setCancelled(true);
+                }
+                var event = new CustomBlockPistonExtendEvent(this,e);
+                Bukkit.getPluginManager().callEvent(event);
             }
         }));
         eventActions.add(registry.register(BlockPistonRetractEvent.class, e -> {
             if (e.getBlocks().contains(getBlock())) {
-                /*
-                    TODO: Send a custom event
-                 */
+                if (!pushable) {
+                    e.setCancelled(true);
+                }
+                var event = new CustomBlockPistonRetractEvent(this,e);
+                Bukkit.getPluginManager().callEvent(event);
             }
         }));
         eventActions.add(registry.register(BlockExplodeEvent.class, e -> {
             if (e.getBlock().equals(getBlock())) {
-                /*
-                    TODO: Send a custom event
-                 */
+                if (!explodable) {
+                    e.setCancelled(true);
+                }
+                var event = new CustomBlockExplodeEvent(this,e);
+                Bukkit.getPluginManager().callEvent(event);
             }
         }));
     }
@@ -89,6 +103,38 @@ public abstract class CustomBlock extends Prop {
     @Override
     public void load() {
         super.load();
+    }
+
+    public boolean isBreakable() {
+        return breakable;
+    }
+
+    public boolean isExplodable() {
+        return explodable;
+    }
+
+    public boolean isInteractable() {
+        return interactable;
+    }
+
+    public boolean isPushable() {
+        return pushable;
+    }
+
+    public void setBreakable(boolean breakable) {
+        this.breakable = breakable;
+    }
+
+    public void setExplodable(boolean explodable) {
+        this.explodable = explodable;
+    }
+
+    public void setInteractable(boolean interactable) {
+        this.interactable = interactable;
+    }
+
+    public void setPushable(boolean pushable) {
+        this.pushable = pushable;
     }
 
     public Block getBlock() {
