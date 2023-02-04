@@ -33,6 +33,15 @@ public abstract class CustomBlock extends Prop {
         }
     }
 
+    public void delete() {
+        var service = ServiceManager.getGenericService(BlockManager.class,this.getClass());
+        if (service != null) {
+            unload();
+            service.removeProp(this);
+            service.unregisterProp(this);
+        }
+    }
+
     public void registerEvents() {
         unregisterEvents();
         var registry = ServiceManager.getService(EventRegistry.class);
