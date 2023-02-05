@@ -1,6 +1,10 @@
 package xyz.larkyy.aquaticlibrary;
 
+import org.bukkit.Material;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.larkyy.aquaticlibrary.item.CustomItem;
+import xyz.larkyy.aquaticlibrary.item.CustomItemHandler;
 import xyz.larkyy.aquaticlibrary.service.ServiceManager;
 
 public class AquaticLibrary {
@@ -11,6 +15,11 @@ public class AquaticLibrary {
 
     public static void init(JavaPlugin plugin) {
         ServiceManager.addService(JavaPlugin.class,plugin);
+        ServiceManager.addService(new CustomItemHandler());
+
+        var item = CustomItem.create(Material.STONE);
+        item.addPersistentData(PersistentDataType.INTEGER,1);
+        item.getItem();
     }
 
     public static JavaPlugin getPlugin() {
