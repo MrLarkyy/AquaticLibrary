@@ -1,6 +1,7 @@
 package xyz.larkyy.aquaticlibrary.event;
 
 import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
 import xyz.larkyy.aquaticlibrary.service.ServiceManager;
 
 import java.util.HashMap;
@@ -12,18 +13,27 @@ public class EventRegistry {
     private final Map<Class<? extends Event>,EventListener> listeners = new HashMap<>();
 
     public <T extends Event> EventAction<T> register(Class<T> clazz, Consumer<T> consumer) {
+        return register(clazz,consumer,EventPriority.NORMAL,false);
+    }
+    public <T extends Event> EventAction<T> register(Class<T> clazz, Consumer<T> consumer, EventPriority priority) {
+        return register(clazz,consumer,priority,false);
+    }
+    public <T extends Event> EventAction<T> register(Class<T> clazz, Consumer<T> consumer, boolean ignoreCancelled) {
+        return register(clazz,consumer,EventPriority.NORMAL,ignoreCancelled);
+    }
+    public <T extends Event> EventAction<T> register(Class<T> clazz, Consumer<T> consumer, EventPriority priority, boolean ignoreCancelled) {
         EventListener<T> aquaticListener = listeners.get(clazz);
         if (aquaticListener != null) {
             return addActionToRegistered(aquaticListener,consumer);
         }
         else {
-            aquaticListener = new EventListener<T>(clazz);
+            aquaticListener = new EventListener<>(clazz,priority,ignoreCancelled);
             aquaticListener.register();
             return aquaticListener.addAction(consumer);
         }
     }
 
-    public void registerListener(EventListener<? extends Event> listener) {
+    void registerListener(EventListener<? extends Event> listener) {
         listeners.put(listener.getEventClass(),listener);
     }
 

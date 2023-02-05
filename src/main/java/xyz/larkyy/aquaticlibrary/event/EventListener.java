@@ -15,14 +15,18 @@ public class EventListener<T extends Event> implements EventExecutor, Listener {
 
     private final List<EventAction<T>> actions;
     private final Class<T> eventClass;
+    private final EventPriority priority;
+    private final boolean ignoreCancelled;
 
-    public EventListener(Class<T> eventClass){
+    public EventListener(Class<T> eventClass, EventPriority priority, boolean ignoreCancelled){
         this.actions = new ArrayList<>();
         this.eventClass = eventClass;
+        this.priority = priority;
+        this.ignoreCancelled = ignoreCancelled;
     }
 
     public EventAction<T> addAction(Consumer<T> consumer) {
-        var action = new EventAction<T>(consumer,this);
+        var action = new EventAction<>(consumer,this);
         actions.add(action);
         return action;
     }
@@ -34,7 +38,7 @@ public class EventListener<T extends Event> implements EventExecutor, Listener {
     public void register() {
         var plugin = AquaticLibrary.getPlugin();
 
-        plugin.getServer().getPluginManager().registerEvent(eventClass, this, EventPriority.NORMAL,this,plugin,false);
+        plugin.getServer().getPluginManager().registerEvent(eventClass, this, priority,this,plugin,ignoreCancelled);
         EventRegistry.get().registerListener(this);
     }
 
