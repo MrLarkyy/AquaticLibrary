@@ -26,7 +26,7 @@ public class VanillaItem extends CustomItem {
     }
 
     public VanillaItem(ItemStack itemStack) throws UnknownCustomItemException {
-        super(null,null,itemStack.getAmount(), itemStack.getItemMeta() == null ? -1 :  itemStack.getItemMeta().getCustomModelData(),new HashMap<>(), new ArrayList<>());
+        super(null,null,itemStack.getAmount(), itemStack.getItemMeta() == null || !itemStack.getItemMeta().hasCustomModelData() ? -1 :  itemStack.getItemMeta().getCustomModelData(),new HashMap<>(), new ArrayList<>());
         this.itemStack = itemStack;
 
         if (getUnmodifiedItem() == null) {

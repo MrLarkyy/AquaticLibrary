@@ -20,5 +20,4 @@ public class BlockManager<T extends CustomBlock> extends PropManager<T> {
         ServiceManager.addGenericService(blockClass,manager);
         return manager;
     }
-
 }

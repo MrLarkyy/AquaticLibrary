@@ -12,16 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class PropContext<T extends Prop> extends DatabaseContext {
-
-    private final Function<Map.Entry<Location,PropData>,T> createProp;
+public class PropContext2<T extends Prop> extends DatabaseContext  {
+    private List<T> props = new ArrayList<>();
+    private final PropFactory factory;
     private final String tableName;
     private final Consumer<DatabaseConfiguration> onConfiguring;
 
-    public PropContext(String tableName,Function<Map.Entry<Location,PropData>,T> createPropFunction, Consumer<DatabaseConfiguration> onConfiguring) {
-        this.createProp = createPropFunction;
+    public PropContext2(String tableName, PropFactory factory, Consumer<DatabaseConfiguration> onConfiguring) {
+        this.factory = factory;
         this.tableName = tableName;
         this.onConfiguring = onConfiguring;
     }
@@ -50,6 +49,7 @@ public class PropContext<T extends Prop> extends DatabaseContext {
                 throw new RuntimeException(e);
             }
         });
+        props.add((T) prop);
     }
 
     public void updateProp(T prop) {
@@ -71,6 +71,7 @@ public class PropContext<T extends Prop> extends DatabaseContext {
                 throw new RuntimeException(e);
             }
         });
+        props.remove((T) prop);
     }
 
     public List<T> loadProps() {
@@ -84,14 +85,15 @@ public class PropContext<T extends Prop> extends DatabaseContext {
                     Location location = Location.deserialize(gson.fromJson(rs.getString("location"), Map.class));
                     PropData propData = new PropData(gson.fromJson(rs.getString("data"), Map.class));
                     propData.addData("table_column_id",rs.getLong("id")+"");
-                    var prop = createProp.apply(new AbstractMap.SimpleEntry<>(location,propData));
-                    props.add(prop);
+                    var prop = factory.create(location,propData);
+                    props.add((T) prop);
                     prop.load();
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
+        this.props = props;
         return props;
     }
 
@@ -111,5 +113,9 @@ public class PropContext<T extends Prop> extends DatabaseContext {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public List<T> getProps() {
+        return props;
     }
 }

@@ -1,5 +1,6 @@
-package xyz.larkyy.aquaticlibrary.database.configuration;
+package xyz.larkyy.aquaticlibrary.database.configuration.adapters;
 
+import xyz.larkyy.aquaticlibrary.database.configuration.SQLAdapter;
 import xyz.larkyy.aquaticlibrary.database.driver.SQLDriver;
 import xyz.larkyy.aquaticlibrary.database.driver.impl.SQLite;
 

@@ -28,7 +28,7 @@ public abstract class CustomItem {
     private int amount;
     private int modeldata;
     private Map<Enchantment,Integer> enchantments;
-    private Map<PersistentDataType,Object> persistentData;
+    private Map<PersistentDataType,Object> persistentData = new HashMap<>();
     private List<ItemFlag> flags;
 
     public CustomItem(String name, List<String> description, int amount, int modeldata, Map<Enchantment,Integer> enchantments, List<ItemFlag> flags) {

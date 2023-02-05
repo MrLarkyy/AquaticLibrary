@@ -27,9 +27,9 @@ public abstract class CustomBlock extends Prop {
 
     public CustomBlock(Location location, PropData data) {
         super(location, data);
-        var service = ServiceManager.getGenericService(BlockManager.class,this.getClass());
+        var service = ServiceManager.getService(BlockManager2.class);
         if (service != null) {
-            service.addProp(this);
+            service.addCustomBlock(this);
         }
         breakable = true;
         explodable = true;
@@ -38,11 +38,18 @@ public abstract class CustomBlock extends Prop {
     }
 
     public void delete() {
-        var service = ServiceManager.getGenericService(BlockManager.class,this.getClass());
+        var service = ServiceManager.getService(BlockManager2.class);
         if (service != null) {
             unload();
-            service.removeProp(this);
-            service.unregisterProp(this);
+            service.removeCustomBlock(this);
+            service.unregisterBlock(this);
+        }
+    }
+
+    public void register() {
+        var service = ServiceManager.getService(BlockManager2.class);
+        if (service != null) {
+            service.registerBlock(this);
         }
     }
 
